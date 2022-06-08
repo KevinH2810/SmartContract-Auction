@@ -1,8 +1,23 @@
 //SPDX-License-Identifier: GPL-3.0
 pragma solidity >=0.5.0 <0.9.0;
 
+contract Creator {
+    address public ownerCreator;
+    Auction[] public deployedAuction;
+
+    constructor(){
+        ownerCreator = msg.sender;
+    }
+
+    function deployAuction() public{
+        Auction new_Auction_Address = new Auction(msg.sender);
+        deployedAuction.push(new_Auction_Address);
+    }
+
+}
+
 contract Auction {
-    address public owner;
+    address payable public owner;
     //its not safe to use block.timestamp as a timer since the miner can spoof the block timestamp
     uint public startBlock;
     uint public endBlock;
@@ -24,8 +39,8 @@ contract Auction {
     uint bidIncrement;
 
     //when initiating contract, it will be in ENDED state
-    constructor(){
-        owner = msg.sender;
+    constructor(address _contractOwner){
+        owner = payable(_contractOwner);
         auctionState = State.Started;
     }
 
